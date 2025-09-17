@@ -2,33 +2,31 @@
 
 import { useState } from "react";
 
-interface Props {
-  onSend: (text: string) => void;
-}
+interface Props { onSend: (text: string) => void; disabled?: boolean }
 
-function InputBar({ onSend }: Props) {
-  // local state for the input field
+export default function InputBar({ onSend, disabled }: Props) {
+  // local state for the textbox
   const [input, setInput] = useState("");
 
-  // send text to ChatApp
-  const handleSend = () => {
-    if (!input.trim()) return; // ignore empty input
-    onSend(input); 
-    setInput(""); // reset input box
+  // notify parent and clear box
+  const send = () => {
+    if (disabled) return;
+    if (!input.trim()) return;
+    onSend(input);
+    setInput("");
   };
 
   return (
-    <div style={{ marginTop: 10 }}>
+    <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
       <input
         value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        placeholder="Type here..."
-        style={{ width: "80%" }}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => e.key === "Enter" && send()}
+        placeholder="type here"
+        style={{ flex: 1 }}
+        disabled={disabled}
       />
-      <button onClick={handleSend}>Send</button>
+      <button onClick={send} disabled={disabled}>send</button>
     </div>
   );
 }
-
-export default InputBar;

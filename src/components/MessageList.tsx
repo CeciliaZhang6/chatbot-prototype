@@ -1,18 +1,16 @@
 // MessageList.tsx
+import React from "react";
+import type { Msg } from "../engine/ChatEngine";
 
-interface Props {
-  messages: string[];
-}
-
-function MessageList({ messages }: Props) {
-  // render messages
+// main component
+export default function MessageList({ messages }: { messages: Msg[] }) {
   return (
-    <div style={{ border: "1px solid #ccc", height: 300, overflowY: "auto" }}>
+    <div style={{ border: "1px solid #666", height: 320, overflowY: "auto", padding: 10 }}>
       {messages.map((m, i) => (
-        <div key={i}>{m}</div>
+        <div key={i} style={{ textAlign: m.sender === "user" ? "right" : "left" }}>
+          <strong>{m.sender === "user" ? "you" : "bot"}:</strong> {m.text}
+        </div>
       ))}
     </div>
   );
 }
-
-export default MessageList;
