@@ -1,21 +1,39 @@
-# React + TypeScript + Vite
+# Support Chatbot Prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was built for the **SWE Take-Home Assignment** by Cecilia Zhang.  
+Scenario: **Guiding a customer through a simple technical troubleshooting process**.
 
-While this project uses React, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+---
 
-## Deploy Your Own
+## Live Demo
 
-Deploy your own Vite project with Vercel.
+[Try it here!](https://chatbot-prototype-lyart.vercel.app/)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/framework-boilerplates/vite-react&template=vite-react)
+---
 
-_Live Example: https://vite-react-example.vercel.app_
+## Screenshots
 
-### Deploying From Your Terminal
+**Example 1 — Restart suggestion**  
+![restart suggestion](public/example1.png)
 
-You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
+**Example 2 — Escalation path**  
+![escalation](public/example2.png)
 
-```shell
-$ vercel
+---
+
+## Setup / Installation
+
+```bash
+git clone https://github.com/CeciliaZhang6/chatbot-prototype.git
+cd chatbot-prototype
+npm install
+npm run dev
 ```
+
+Open [local host](http://localhost:517) in your browser.
+
+---
+
+## Dev Log
+
+For more details, please check [dev log](https://github.com/CeciliaZhang6/chatbot-prototype/blob/main/dev-log.md).
