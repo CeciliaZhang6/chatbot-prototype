@@ -73,4 +73,112 @@ function ChatApp() {
 
 ---
 
-## Day 2 — TBD
+## Day 2 — Connect Chat Engine to UI + UI Polish
+
+### Implementation
+
+- integrated **ChatEngine** with `ChatApp`, `MessageList`, and `InputBar`
+- implemented 5 app states (`init`, `next_step`, `processing`, `error_state`, `ended`)
+- transcript now driven by `engine.state.history` instead of placeholder texts
+- validated 2 error cases (empty description, invalid yes/no)
+- fixed duplicate greeting issue caused by React StrictMode double invoking `init()`
+- polished chat UI
+
+### core concept — chat engine integration
+
+The UI no longer owns its own transcript. Instead, it renders directly from `engine.state.history`.  
+when the user sends input, chatapp calls `engine.send(text)` which validates and routes to the next node in the JSON flow.
+
+Core Design:
+
+- `ChatApp` delegates all logic to the engine
+- `ChatEngine` enforces flow and state transitions
+- UI only reflects `engine.state.history` and `engine.state.appState`
+
+#### chatapp wiring
+
+```tsx
+// simplified chatapp
+const engine = new ChatEngine();
+
+useEffect(() => {
+  engine.init();     // push first bot message
+  rerender();
+}, []);
+
+const handleSend = (text: string) => {
+  engine.send(text); // delegate to engine
+  rerender();
+};
+
+return (
+  <>
+    <MessageList messages={engine.state.history} />
+    <InputBar onSend={handleSend} disabled={engine.state.appState !== "next_step"} />
+  </>
+);
+```
+
+#### Engine state machine
+
+```tsx
+// five app states
+type AppState = "init" | "next_step" | "processing" | "error_state" | "ended";
+
+send(input: string) {
+  this.pushUser(input);
+  this.state.appState = "processing";
+
+  const n = this.node;
+  if (n.input === "free_text" && !input.trim()) return this.fail(n, "non_empty");
+
+  if (n.input === "yes_no") {
+    const v = normYesNo(input);
+    if (v !== "yes" && v !== "no") return this.fail(n, "yes_no");
+    return this.goto(v === "yes" ? "resolved" : "escalate");
+  }
+
+  if (n.onValid) return this.goto(n.onValid);
+}
+```
+
+#### error handling
+
+```tsx
+private fail(n: Node, kind: "non_empty" | "yes_no") {
+  const msg = n.validations?.find(v => v.kind === kind)?.errorMessage || "invalid input";
+  this.pushBot(msg);
+  this.state.appState = "error_state";
+  // stay on same node, return to next_step for retry
+  this.state.appState = "next_step";
+}
+```
+
+#### Challenge 1 — Duplicate greeting on init
+
+React StrictMode caused `useEffect` to run twice in dev mode, which triggered `engine.init()` twice and displayed the greeting message twice.
+
+Fix: Removed (commented out) `StrictMode` wrapper in `main.tsx`.
+
+#### Challenge 2 — Chat view scrolling & layout
+
+At first, the chat box kept growing downward when messages overflowed, pushing the input bar off-screen, breaking the fixed “chat window” feel.
+
+Fix: Used a flexbox container with `minHeight: 0` and `overflowY: auto` in `MessageList`. Then added a “sentinel” div at the bottom to auto-scroll into view whenever messages update, creating a smooth experience similar to texting.
+
+```tsx
+const bottomRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [messages]);
+
+return (
+  <div style={{ flex: 1, overflowY: "auto" }}>
+    {messages.map(...)}
+    <div ref={bottomRef} />
+  </div>
+);
+```
+
+---
