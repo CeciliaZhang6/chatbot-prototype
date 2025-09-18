@@ -1,6 +1,6 @@
 // src/components/ChatApp.tsx
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MessageList from "./MessageList";
 import InputBar from "./InputBar";
 import { ChatEngine } from "../engine/ChatEngine";
