@@ -19,6 +19,12 @@ Scenario: **Guiding a customer through a simple technical troubleshooting proces
 **Example 2 — Escalation path**  
 ![escalation](public/example2.png)
 
+**Error Handling 1 — No description**
+![no description](public/error1.png)
+
+**Error Handling 2 — Not asnwering yes or no**
+![not asnwering yes or no](public/error2.png)
+
 ---
 
 ## Setup / Installation
