@@ -21,6 +21,7 @@ export default function InputBar({ onSend, disabled, placeholder }: Props) {
 
   return (
     <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+      {/* Input Box */}
       <input
         value={input}
         onChange={e => setInput(e.target.value)}
@@ -38,6 +39,7 @@ export default function InputBar({ onSend, disabled, placeholder }: Props) {
         }}
         disabled={disabled}
       />
+      {/* Send Button */}
       <button
         onClick={send}
         disabled={disabled}
@@ -45,17 +47,17 @@ export default function InputBar({ onSend, disabled, placeholder }: Props) {
           padding: "8px 16px",
           borderRadius: 20,
           border: "none",
-          backgroundColor: disabled ? "#555" : "#0078ff",
+          backgroundColor: disabled ? "#555" : "#ad1457",
           fontSize: "clamp(14px, 1.5vw, 18px)",
           color: "white",
           cursor: disabled ? "not-allowed" : "pointer",
           transition: "background-color 0.2s ease"
         }}
         onMouseOver={e => {
-          if (!disabled) (e.currentTarget.style.backgroundColor = "#005fcc");
+          if (!disabled) (e.currentTarget.style.backgroundColor = "#c2188c");
         }}
         onMouseOut={e => {
-          if (!disabled) (e.currentTarget.style.backgroundColor = "#0078ff");
+          if (!disabled) (e.currentTarget.style.backgroundColor = "#ad1457");
         }}
       >
         Send

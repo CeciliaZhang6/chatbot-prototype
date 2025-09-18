@@ -1,4 +1,4 @@
-// ChatApp.tsx
+// src/components/ChatApp.tsx
 
 import React, { useEffect, useState } from "react";
 import MessageList from "./MessageList";
@@ -39,6 +39,7 @@ export default function ChatApp() {
       width: "100vw",
       backgroundColor: "#222"
     }}>
+      {/* chat view */}
       <div style={{
         width: "50vw",        // 50% of screen width
         height: "75vh",       // 75% of screen height
@@ -49,8 +50,10 @@ export default function ChatApp() {
         padding: 16,
         boxSizing: "border-box"
       }}>
+        {/* chatbot title */}
         <h2 style={{ color: "white", margin: "0 0 10px 0", textAlign: "center" }}> ~~ Support Chatbot ~~ </h2>
 
+        {/* chat transcript */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
           <MessageList messages={engine.state.history} />
           <InputBar
@@ -60,7 +63,7 @@ export default function ChatApp() {
 
         </div>
 
-
+        {/* chat eneded note */}
         <div style={{ position: "relative" }}>
         {engine.state.appState === "ended" && (
             <div style={{

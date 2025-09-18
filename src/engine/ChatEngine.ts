@@ -1,10 +1,10 @@
-// ChatEngine.ts
+// src/components/ChatEngine.ts
 import flow from "../data/flow.json";
 
 export type AppState = "init" | "next_step" | "processing" | "error_state" | "ended";
 export type Msg = { sender: "bot" | "user"; text: string };
 
-// shape of nodes in your json
+// shape of nodes in json
 type Node = {
   id: string;
   message: string;
@@ -18,9 +18,14 @@ type Node = {
 type Flow = Record<string, Node>;
 
 function normYesNo(s: string) {
+  // identify if user means yes or no
   const t = s.trim().toLowerCase();
-  if (/(^y$|^yes$|yeah|yep|sure|ok)/.test(t)) return "yes";
-  if (/(^n$|^no$|nope|nah)/.test(t)) return "no";
+  const yesList = ["y", "yes", "yeah", "yep", "yea", "ya", "sure", "ok", "okay"];
+  const noList = ["n", "no", "nope", "nah", "not really"];
+
+  if (yesList.includes(t)) return "yes";
+  if (noList.includes(t)) return "no";
+
   return t;
 }
 
@@ -53,47 +58,69 @@ export class ChatEngine {
 
     const n = this.node;
 
+    // check if current node expects free text 
     if (n.input === "free_text") {
-      if (!input.trim()) return this.fail(n, "non_empty");
+      const trimmed = input.trim().toLowerCase();
+      if (!trimmed) return this.fail(n, "non_empty");
+
+      const genericList = ["yes", "no", "y", "n", "yeah", "nope", "hi", "hello", "hey"];
+      if (genericList.includes(trimmed)) {
+        return this.fail(n, "not_generic");
+      }
+
       if (n.onValid) return this.goto(n.onValid);
     }
 
+
+    // check if suggestion works
     if (n.input === "yes_no") {
       const v = normYesNo(input);
       if (v !== "yes" && v !== "no") return this.fail(n, "yes_no");
-      const next =
-        n.choices?.find(c => c.value === v)?.next ??
-        (v === "yes" ? "resolved" : "escalate");
-      return this.goto(next);
+
+      if (n.id === "suggest_restart") {
+        return this.goto(v === "yes" ? "resolved" : "suggest_plug");
+      }
+      if (n.id === "suggest_plug") {
+        return this.goto(v === "yes" ? "resolved" : "escalate");
+      }
+      return this.goto(v === "yes" ? "resolved" : "escalate");
     }
   }
 
   private goto(key: string) {
+    // clear old error and update current node
     this.state.error = null;
     this.state.currentKey = key;
     const next = this.node;
 
+    // push the bot message for this node
     this.pushBot(next.message);
 
+    // if node is marked as end, stop the chat
     if (next.end) {
       this.state.appState = "ended";
       return;
     }
 
+    // if node requires no input auto advance again
     if (next.input === "none") {
       this.state.appState = "processing";
       this.autoAdvance();
     } else {
+      // otherwise wait for next user input
       this.state.appState = "next_step";
     }
   }
 
-  private fail(n: Node, kind: "non_empty" | "yes_no") {
+  private fail(n: Node, kind: "non_empty" | "yes_no" | "not_generic") {
+    // pick error message from node validations or use default
     const msg =
-      n.validations?.find(v => v.kind === kind)?.errorMessage ||
-      "sorry i did not catch that";
+        n.validations?.find(v => v.kind === kind)?.errorMessage ||
+        "sorry i did not catch that";
+    // store error and display to user
     this.state.error = msg;
     this.pushBot(msg);
+    // mark error state then return to waiting for input
     this.state.appState = "error_state";
     this.state.appState = "next_step";
   }

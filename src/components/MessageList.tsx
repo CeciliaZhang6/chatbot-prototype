@@ -1,4 +1,4 @@
-// MessageList.tsx
+// src/components/MessageList.tsx
 import { useEffect, useRef } from "react";
 import type { Msg } from "../engine/ChatEngine";
 
@@ -25,7 +25,7 @@ export default function MessageList({ messages }: { messages: Msg[] }) {
         padding: 10,
         backgroundColor: "#111",
         borderRadius: 8,
-        fontSize: "clamp(14px, 1.5vw, 18px)"
+        fontSize: "clamp(14px, 1.5vw, 18px)" // auto size font
       }}
     >
       {messages.map((m, i) => {
@@ -39,20 +39,23 @@ export default function MessageList({ messages }: { messages: Msg[] }) {
               marginBottom: 8
             }}
           >
+            {/* chat bubble for 1 message */}
             <div
               style={{
                 position: "relative",
                 maxWidth: "70%",
                 padding: "10px 14px",
                 borderRadius: 12,
-                backgroundColor: isUser ? "#0078ff" : "#444",
+                backgroundColor: isUser ? "#ad1457" : "#444",
                 color: "white",
                 fontSize: "inherit",
                 marginRight: isUser ? 8 : 0, // space for user tail
                 marginLeft: isUser ? 0 : 8   // space for bot tail
               }}
             >
+              {/* sender label and text */}
               <strong>{isUser ? "You: " : "Support: "}</strong>{m.text}
+              {/* chat bubble tail */}
               <div
                 style={{
                   content: '""',
@@ -64,7 +67,7 @@ export default function MessageList({ messages }: { messages: Msg[] }) {
                   borderTop: "10px solid transparent",
                   borderBottom: "10px solid transparent",
                   borderLeft: isUser ? "none" : "10px solid #444",
-                  borderRight: isUser ? "10px solid #0078ff" : "none",
+                  borderRight: isUser ? "10px solid #ad1457" : "none",
                   right: isUser ? -10 : "auto",
                   left: isUser ? "auto" : -10,
                   borderRadius: 6,

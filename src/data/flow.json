@@ -1,34 +1,39 @@
 {
   "start": {
-    "id": "greet",
-    "message": "Hi! I’m your support bot. Sorry you’re having trouble. Can you describe the issue?",
+    "id": "start",
+    "message": "Hi! What seems to be the problem with your device?",
     "input": "free_text",
+    "onValid": "suggest_restart",
     "validations": [
-      { "kind": "non_empty", "errorMessage": "Please provide a short description of the issue." }
-    ],
-    "onValid": "suggest"
+      { "kind": "non_empty", "errorMessage": "Please provide a short description of the issue." },
+      { "kind": "not_generic", "errorMessage": "Please describe the problem, not just hi or yes/no." }
+    ]
   },
-  "suggest": {
-    "id": "suggest",
-    "message": "Let’s try restarting your device. Did this solve the problem? (yes/no)",
+  "suggest_restart": {
+    "id": "suggest_restart",
+    "message": "Let's try restarting your device. Did this solve the problem? (yes/no)",
     "input": "yes_no",
     "validations": [
       { "kind": "yes_no", "errorMessage": "Please reply with yes or no." }
-    ],
-    "choices": [
-      { "label": "Yes", "value": "yes", "next": "resolved" },
-      { "label": "No", "value": "no", "next": "escalate" }
+    ]
+  },
+  "suggest_plug": {
+    "id": "suggest_plug",
+    "message": "Please check if your device is properly plugged in and the outlet has power. Did this solve the problem? (yes/no)",
+    "input": "yes_no",
+    "validations": [
+      { "kind": "yes_no", "errorMessage": "Please reply with yes or no." }
     ]
   },
   "resolved": {
     "id": "resolved",
-    "message": "Great! Thank you for your patience. I’ll close this chat now.",
+    "message": "Great! Glad I could help. Have a nice day!",
     "input": "none",
     "end": true
   },
   "escalate": {
     "id": "escalate",
-    "message": "Thanks for trying that. I’ll record your issue and follow up with support.",
+    "message": "Sorry, I wasn’t able to resolve your issue. I will record your problem and escalate it for follow-up.",
     "input": "none",
     "end": true
   }

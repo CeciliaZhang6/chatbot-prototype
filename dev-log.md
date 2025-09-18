@@ -181,4 +181,18 @@ return (
 );
 ```
 
+**Challenge 3 — Rejecting generic user inputs**  
+At first, the bot accepted useless inputs like “hi” or “yes” as valid descriptions.  
+**Fix:** Added a new `not_generic` validation to filter out greetings and yes/no responses at the `free_text` step.  
+
+```tsx
+if (n.input === "free_text") {
+  const trimmed = input.trim().toLowerCase();
+  const genericList = ["yes","no","y","n","yeah","nope","hi","hello","hey"];
+  if (genericList.includes(trimmed)) {
+    return this.fail(n, "not_generic");
+  }
+  if (n.onValid) return this.goto(n.onValid);
+}
+
 ---
